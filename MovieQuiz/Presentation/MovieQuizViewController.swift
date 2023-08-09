@@ -123,12 +123,12 @@ final class MovieQuizViewController: UIViewController {
         imageView.layer.masksToBounds = true // 1
             imageView.layer.borderWidth = 8 // 2
             imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
-        
+        if isCorrect {correctAnswers += 1}
         // запускаем задачу через 1 секунду c помощью диспетчера задач
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
            // код, который мы хотим вызвать через 1 секунду
            self.showNextQuestionOrResults()
-            self.imageView.layer.borderWidth = 0 // 2
+           self.imageView.layer.borderWidth = 0 // 2
         }
     }
     
@@ -146,7 +146,7 @@ final class MovieQuizViewController: UIViewController {
         let givenAnswer = true
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)    }
     
-  
+    
     @IBAction func noButtonClicked(_ sender: Any) {
         let currentQuestion = questions[currentQuestionIndex]
         let givenAnswer = false
