@@ -14,6 +14,12 @@ final class MovieQuizViewController: UIViewController {
         let questionNumber: String
     }
     
+    struct QuizResultsViewModel {
+        let title: String
+        let text: String
+        let buttonText: String
+    }
+    
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
     private let questions: [QuizQuestion] = [
@@ -74,12 +80,52 @@ final class MovieQuizViewController: UIViewController {
         counterLabel.text = step.questionNumber
     }
     
+    private func show(quiz result: QuizResultsViewModel) {
+        let alert = UIAlertController(
+            title: result.title,
+            message: result.text,
+            preferredStyle: .alert)
+        
+        let action = UIAlertAction(title: result.buttonText, style: .default) { _ in
+            self.currentQuestionIndex = 0
+            self.correctAnswers = 0
+            
+            let firstQuestion = self.questions[self.currentQuestionIndex]
+            let viewModel = self.convert(model: firstQuestion)
+            self.show(quiz: viewModel)
+        }
+        
+        alert.addAction(action)
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    
+    private func showNextQuestionOrResults(){
+        if currentQuestionIndex == questions.count - 1{
+            let text = "Ваш результат: \(correctAnswers)/10"
+            let viewModel = QuizResultsViewModel(title: "Этот раунд окончен!",
+                                                 text: text,
+                                                 buttonText: "Сыграть еще раз")
+            show(quiz: viewModel)
+
+        } else {
+            currentQuestionIndex += 1
+            
+            let nextQuestion = questions[currentQuestionIndex]
+            let viewModel = convert(model: nextQuestion)
+            
+            show(quiz: viewModel)
+        }
+    }
+    
     private func showAnswerResult(isCorrect: Bool){
         imageView.layer.masksToBounds = true // даём разрешение на рисование рамки
         imageView.layer.borderWidth = 8 // толщина рамки
         imageView.layer.cornerRadius = 6 // радиус скругления углов рамки - но вроде не нужан, либо ошибка в уроке
         if isCorrect{
             imageView.layer.borderColor = UIColor.ypGreen.cgColor
+            correctAnswer += 1
         } else{
             imageView.layer.borderColor = UIColor.ypRed.cgColor
         }
@@ -91,18 +137,11 @@ final class MovieQuizViewController: UIViewController {
         }
     }
     
-    private func showNextQuestionOrResults(){
-        if currentQuestionIndex == questions.count - 1{
-            //результат квиза
-        } else {
-            currentQuestionIndex += 1
-            
-            let nextQuestion = questions[currentQuestionIndex]
-            let viewModel = convert(model: nextQuestion)
-            
-            show(quiz: viewModel)
-        }
-    }
+
+    
+
+    
+    
     
     @IBOutlet private var imageView: UIImageView!
     @IBOutlet private var counterLabel: UILabel!
@@ -123,9 +162,30 @@ final class MovieQuizViewController: UIViewController {
         }
     }
     
+
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        //show(quiz: <#T##QuizStepViewModel#>)
+        //1
+         let alert = UIAlertController(title: "Этот раунд окончен"
+                                       , message: "Ваш результат ?",
+                                       preferredStyle: .alert)
+         
+         let action = UIAlertAction(title: "Сыграть еще раз", style: .default){
+             _ in
+             self.currentQuestionIndex = 0
+             self.correctAnswer = 0
+             
+             let index = self.currentQuestionIndex
+             let firstQustion = self.questions[index]
+             let viewModel = self.convert(firstQustion)
+             self.show(quiz: viewModel)
+         }
+         alert.addAction(action)
+
+         self.present(alert, animated: true, completion: nil)
+        
     }
 }
 
