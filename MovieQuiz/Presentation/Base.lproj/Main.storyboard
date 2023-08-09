@@ -109,7 +109,6 @@
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="ZJs-tp-Q5X" secondAttribute="bottom" id="KMG-dp-mGJ"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="ZJs-tp-Q5X" secondAttribute="trailing" constant="20" id="Lmv-gh-01q"/>
-                            <constraint firstItem="ZJs-tp-Q5X" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" constant="20" id="TpD-D6-uec"/>
                             <constraint firstItem="ZJs-tp-Q5X" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="pkW-YS-aTR"/>
                             <constraint firstItem="ZJs-tp-Q5X" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="r1W-P5-c0g"/>
                         </constraints>
@@ -117,7 +116,6 @@
                     <connections>
                         <outlet property="counterLabel" destination="SzC-sJ-ezI" id="G4M-97-jPx"/>
                         <outlet property="imageView" destination="66R-RK-GUx" id="ZZg-GX-DR3"/>
-                        <outlet property="test" destination="66R-RK-GUx" id="E5P-Fa-fEh"/>
                         <outlet property="textLabel" destination="EIy-if-Xiy" id="6zy-wd-f0r"/>
                     </connections>
                 </viewController>

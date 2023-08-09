@@ -125,7 +125,7 @@ final class MovieQuizViewController: UIViewController {
         imageView.layer.cornerRadius = 6 // радиус скругления углов рамки - но вроде не нужан, либо ошибка в уроке
         if isCorrect{
             imageView.layer.borderColor = UIColor.ypGreen.cgColor
-            correctAnswer += 1
+            correctAnswers += 1
         } else{
             imageView.layer.borderColor = UIColor.ypRed.cgColor
         }
@@ -175,17 +175,17 @@ final class MovieQuizViewController: UIViewController {
          let action = UIAlertAction(title: "Сыграть еще раз", style: .default){
              _ in
              self.currentQuestionIndex = 0
-             self.correctAnswer = 0
+             self.correctAnswers = 0
              
              let index = self.currentQuestionIndex
              let firstQustion = self.questions[index]
-             let viewModel = self.convert(firstQustion)
+             let viewModel = self.convert(model: firstQustion)
              self.show(quiz: viewModel)
          }
          alert.addAction(action)
 
          self.present(alert, animated: true, completion: nil)
-        
+
     }
 }
 
