@@ -120,20 +120,15 @@ final class MovieQuizViewController: UIViewController {
     }
     
     private func showAnswerResult(isCorrect: Bool){
-        imageView.layer.masksToBounds = true // даём разрешение на рисование рамки
-        imageView.layer.borderWidth = 8 // толщина рамки
-        imageView.layer.cornerRadius = 6 // радиус скругления углов рамки - но вроде не нужан, либо ошибка в уроке
-        if isCorrect{
-            imageView.layer.borderColor = UIColor.ypGreen.cgColor
-            correctAnswers += 1
-        } else{
-            imageView.layer.borderColor = UIColor.ypRed.cgColor
-        }
+        imageView.layer.masksToBounds = true // 1
+            imageView.layer.borderWidth = 8 // 2
+            imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
         
         // запускаем задачу через 1 секунду c помощью диспетчера задач
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
            // код, который мы хотим вызвать через 1 секунду
            self.showNextQuestionOrResults()
+            self.imageView.layer.borderWidth = 0 // 2
         }
     }
     
@@ -147,20 +142,18 @@ final class MovieQuizViewController: UIViewController {
     @IBOutlet private var counterLabel: UILabel!
     @IBOutlet private var textLabel: UILabel!
     @IBAction func yeaButtonClicked(_ sender: Any) {
-        if questions[currentQuestionIndex].correctAnswer == true{
-            showAnswerResult(isCorrect: true)
-        } else{
-            showAnswerResult(isCorrect: false)
-        }
-    }
+        let currentQuestion = questions[currentQuestionIndex] // 1
+        let givenAnswer = true
+        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)    }
     
     @IBAction func noButtonClicked(_ sender: Any) {
-        if questions[currentQuestionIndex].correctAnswer == false{
-            showAnswerResult(isCorrect: true)
-        } else{
-            showAnswerResult(isCorrect: false)
-        }
+        let currentQuestion = questions[currentQuestionIndex]
+        let givenAnswer = false
+        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+    print("Нет")
     }
+    
+    
     
 
     
@@ -168,6 +161,11 @@ final class MovieQuizViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         //1
+        let index = self.currentQuestionIndex
+        let firstQustion = self.questions[index]
+        let viewModel = self.convert(model: firstQustion)
+        self.show(quiz: viewModel)
+
          let alert = UIAlertController(title: "Этот раунд окончен"
                                        , message: "Ваш результат ?",
                                        preferredStyle: .alert)
