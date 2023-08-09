@@ -146,13 +146,13 @@ final class MovieQuizViewController: UIViewController {
         let givenAnswer = true
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)    }
     
+  
     @IBAction func noButtonClicked(_ sender: Any) {
         let currentQuestion = questions[currentQuestionIndex]
         let givenAnswer = false
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     print("Нет")
     }
-    
     
     
 
