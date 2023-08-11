@@ -22,7 +22,6 @@ final class MovieQuizViewController: UIViewController {
     
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
-    
     private let questions: [QuizQuestion] = [
             QuizQuestion(
                 image: "The Godfather",
@@ -91,8 +90,6 @@ final class MovieQuizViewController: UIViewController {
 
     }
     
-
-    
     private func convert(model: QuizQuestion) -> QuizStepViewModel{
         let questionStep = QuizStepViewModel(
             imageView: UIImage(named: model.image) ?? UIImage(),
@@ -123,9 +120,7 @@ final class MovieQuizViewController: UIViewController {
             let viewModel = self.convert(model: firstQuestion)
             self.show(quiz: viewModel)
         }
-        
         alert.addAction(action)
-        
         self.present(alert, animated: true, completion: nil)
     }
     
