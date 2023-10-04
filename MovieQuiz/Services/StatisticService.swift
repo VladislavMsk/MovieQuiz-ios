@@ -1,26 +1,20 @@
-//
-//  StatisticService.swift
-//  MovieQuiz
-//
-//  Created by Vladislav Tudos on 17.08.2023.
-//
-
 import Foundation
 
-final class StatisticServiceImplementation {
+
+
+final class StatisticServiceImpl {
+    //MARK: - Privates Properties
     private let userDefaults: UserDefaults
-    private let decoder: JSONDecoder
     private let encoder: JSONEncoder
+    private let decoder: JSONDecoder
     private let dateProvider: () -> Date
-    private enum Keys: String {
-        case correct, total, bestGame, gamesCount
-    }
     
-    init(userDefaults: UserDefaults,
-         decoder: JSONDecoder,
-         encoder: JSONEncoder,
-         dateProvider: @escaping () -> Date
-    ) {
+    //MARK: - Init
+    init(userDefaults: UserDefaults = .standard,
+         encoder: JSONEncoder = JSONEncoder(),
+         decoder: JSONDecoder = JSONDecoder(),
+         dateProvider: @escaping () -> Date = { Date() }
+    ){
         self.userDefaults = userDefaults
         self.encoder = encoder
         self.decoder = decoder
@@ -28,85 +22,81 @@ final class StatisticServiceImplementation {
     }
 }
 
-extension StatisticServiceImplementation: StatisticService {
-        
-    var gamesCount: Int {
-        get  {
-            userDefaults.integer(forKey: Keys.gamesCount.rawValue)
-        }
-        set {
-            userDefaults.set(newValue, forKey: Keys.gamesCount.rawValue)
-        }
-    }
+extension StatisticServiceImpl: StatisticService {
     
-    var total: Int {
-        get  {
-            userDefaults.integer(forKey: Keys.total.rawValue)
-        }
-        set {
-            userDefaults.set(newValue, forKey: Keys.total.rawValue)
-        }
-    }
+    //MARK: - Public Properties
     var totalAccuracy: Double {
-        (Double(correct) / Double(total)) * 100
+        Double(correct) / Double(total) * 100
     }
     
-    var correct: Int {
-        get  {
+    var gamesCount: Int {
+        get {
+            userDefaults.integer(forKey: Keys.gameCount.rawValue)
+        }
+        
+        set {
+            userDefaults.set(newValue, forKey: Keys.gameCount.rawValue)
+        }
+    }
+    
+    private var correct: Int {
+        get {
             userDefaults.integer(forKey: Keys.correct.rawValue)
         }
+        
         set {
             userDefaults.set(newValue, forKey: Keys.correct.rawValue)
         }
     }
     
+    private var total: Int {
+        get {
+            userDefaults.integer(forKey: Keys.total.rawValue)
+        }
+        
+        set {
+            userDefaults.set(newValue, forKey: Keys.total.rawValue)
+        }
+    }
+    
     var bestGame: BestGame? {
         get {
-            guard
-                  let data = userDefaults.data(forKey: Keys.bestGame.rawValue),
-                  let bestGame = try? decoder.decode(BestGame.self, from: data) else {
+            guard let data = userDefaults.data(forKey: Keys.bestGame.rawValue),
+                  let record = try? decoder.decode(BestGame.self, from: data) else {
                 return nil
             }
-            return bestGame
+            return record
         }
+        
         set {
-            let data = try? encoder.encode(newValue)
+            guard let data = try? encoder.encode(newValue) else {
+                print("Невозможно сохранить результат")
+                return
+            }
             userDefaults.set(data, forKey: Keys.bestGame.rawValue)
         }
     }
     
-    func store(correct: Int, total: Int) {
-        self.correct += correct
-        self.total += total
+    //MARK: - Public Methods
+    func store(correct count: Int, total amount: Int) {
+        self.correct = count
+        self.total = amount
         self.gamesCount += 1
         let date = dateProvider()
-        let currentBestGame = BestGame(correct: correct, total: total, date: date)
-     
-        guard let previousBestGame = bestGame else {
-                    bestGame = currentBestGame
-                    return
-                }
-                if previousBestGame > currentBestGame {
-                    bestGame = currentBestGame
-                }
-    }
-}
-
-struct BestGame: Codable {
-    let correct: Int
-    let total: Int
-    let date: Date
-}
-
-extension BestGame: Comparable {
-    private var accuracy: Double {
-        guard total != 0 else {
-            return 0
-        }
-        return Double(correct) / Double(total)
         
+        let current = BestGame(correct: correct, total: total, date: date)
+        
+        if let previosBestGame = bestGame {
+            if current > previosBestGame {
+                bestGame = current
+            }
+        } else {
+            bestGame = current
+        }
     }
-    static func < (lhs: BestGame, rhs: BestGame) -> Bool {
-        lhs.accuracy < rhs.accuracy
+    
+    //MARK: - Private Enum
+    private enum Keys: String {
+        case correct, total, bestGame, gameCount
     }
 }
